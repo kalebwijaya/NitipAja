@@ -53,6 +53,7 @@ public class TabRequestFragment extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listProduct.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
                     TabRequestModel tabRequestModel = postSnapshot.getValue(TabRequestModel.class);
                     if(tabRequestModel.getUserID().equals(userID)){

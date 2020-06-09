@@ -49,6 +49,7 @@ public class TabTakeOrderFragment extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listProduct.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
                     TabTakeOrderModel tabTakeOrderModel = postSnapshot.getValue(TabTakeOrderModel.class);
                     if(tabTakeOrderModel.getTakenOrderBy().equals(userID)){

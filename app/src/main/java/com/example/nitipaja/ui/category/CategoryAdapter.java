@@ -61,6 +61,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryHolder> {
                 String gItemQuantity = models.get(position).getItemQuantity();
                 String gItemDescription = models.get(position).getItemDescription();
                 String gUserID = models.get(position).getUserID();
+                String gItemID = models.get(position).getItemID();
 
                 BitmapDrawable bitmapDrawable = (BitmapDrawable) holder.mImageView.getDrawable();
 
@@ -79,6 +80,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryHolder> {
                 intent.putExtra("itemDescription",gItemDescription);
                 intent.putExtra("itemImage",bytes);
                 intent.putExtra("userID",gUserID);
+                intent.putExtra("itemID",gItemID);
                 mContext.startActivity(intent);
 
             }

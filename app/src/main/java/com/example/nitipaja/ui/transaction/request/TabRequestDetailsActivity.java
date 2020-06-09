@@ -1,7 +1,10 @@
 package com.example.nitipaja.ui.transaction.request;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,13 +15,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nitipaja.R;
+import com.example.nitipaja.ui.transaction.takeOrder.TabTakeOrderDetailsActivity;
+import com.example.nitipaja.ui.transaction.takeOrder.TabTakeOrderModel;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class TabRequestDetailsActivity extends AppCompatActivity {
 
     private String userID;
+    private String itemID;
+    private String childName;
     private TextView itemName, itemLocation, itemPrice, itemDescription, itemQuantity, itemStatus;
     private ImageView itemImage;
     private Button btnCancel, btnWA;
+
+    private TabRequestModel currentRequest;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,18 +50,33 @@ public class TabRequestDetailsActivity extends AppCompatActivity {
         btnWA = findViewById(R.id.btn_request_WA);
         btnCancel = findViewById(R.id.btn_tab_request_cancel);
 
+        databaseReference = FirebaseDatabase.getInstance().getReference("transaction");
         Intent intent = getIntent();
+        itemID = intent.getStringExtra("itemID");
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+                    TabRequestModel tabRequestModel = postSnapshot.getValue(TabRequestModel.class);
+                    if(tabRequestModel.getItemID().equals(itemID)){
+                        currentRequest = tabRequestModel;
+                        childName = postSnapshot.getKey();
+                        setValue();
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         byte[] bytes = getIntent().getByteArrayExtra("itemImage");
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
 
-        userID = intent.getStringExtra("userID");
-        itemName.setText(intent.getStringExtra("itemName"));
-        itemLocation.setText(intent.getStringExtra("itemLocation"));
-        itemDescription.setText(intent.getStringExtra("itemDescription"));
-        itemPrice.setText(intent.getStringExtra("itemPrice"));
-        itemQuantity.setText("Jumlah : " + intent.getIntExtra("itemQuantitiy",1));
-        itemStatus.setText("Status : " + intent.getStringExtra("itemStatus"));
         itemImage.setImageBitmap(bitmap);
 
         if(intent.getStringExtra("itemStatus").equals("Menunggu")){
@@ -56,5 +86,40 @@ public class TabRequestDetailsActivity extends AppCompatActivity {
             btnCancel.setActivated(false);
         }
 
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder changeStatusDialog = new AlertDialog.Builder(v.getContext());
+                changeStatusDialog.setTitle("Batalkan Pesanan");
+                changeStatusDialog.setMessage("Batalkan pesanan " + currentRequest.getItemName());
+                changeStatusDialog.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        databaseReference.child(childName).removeValue();
+                        TabRequestDetailsActivity.this.finish();
+                    }
+                });
+
+                changeStatusDialog.setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                changeStatusDialog.create().show();
+            }
+        });
+
+    }
+
+    private void setValue(){
+        userID = currentRequest.getUserID();
+        itemName.setText(currentRequest.getItemName());
+        itemLocation.setText(currentRequest.getItemLocation());
+        itemDescription.setText(currentRequest.getItemDescription());
+        itemPrice.setText(currentRequest.getItemPrice());
+        itemQuantity.setText("Jumlah : " + currentRequest.getItemQuantity());
+        itemStatus.setText("Status : " + currentRequest.getItemStatus());
     }
 }

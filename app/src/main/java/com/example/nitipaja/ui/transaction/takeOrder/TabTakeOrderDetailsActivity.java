@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import com.example.nitipaja.R;
 import com.example.nitipaja.ui.login.LoginActivity;
+import com.example.nitipaja.ui.profile.EditProfileActivity;
+import com.example.nitipaja.ui.transaction.request.TabRequestDetailsActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -34,6 +36,7 @@ public class TabTakeOrderDetailsActivity extends AppCompatActivity {
 
     private String userID;
     private String itemID;
+    private String childName;
     private TextView itemName, itemLocation, itemPrice, itemDescription, itemQuantity, itemStatus;
     private ImageView itemImage;
     private Button btnStatus, btnCancel, btnWA;
@@ -61,8 +64,7 @@ public class TabTakeOrderDetailsActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference("transaction");
 
         final Intent intent = getIntent();
-        userID = intent.getStringExtra("userID");
-        itemID = intent.getStringExtra("itamID");
+        itemID = intent.getStringExtra("itemID");
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -71,6 +73,8 @@ public class TabTakeOrderDetailsActivity extends AppCompatActivity {
                     TabTakeOrderModel tabTakeOrderModel = postSnapshot.getValue(TabTakeOrderModel.class);
                     if(tabTakeOrderModel.getItemID().equals(itemID)){
                         currentTakenOrder = tabTakeOrderModel;
+                        childName = postSnapshot.getKey();
+                        setValue();
                         break;
                     }
                 }
@@ -82,16 +86,10 @@ public class TabTakeOrderDetailsActivity extends AppCompatActivity {
             }
         });
 
-
         byte[] bytes = getIntent().getByteArrayExtra("itemImage");
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
 
-        itemName.setText(currentTakenOrder.getItemName());
-        itemLocation.setText(currentTakenOrder.getItemLocation());
-        itemDescription.setText(currentTakenOrder.getItemDescription());
-        itemPrice.setText(currentTakenOrder.getItemPrice());
-        itemQuantity.setText("Jumlah : " + currentTakenOrder.getItemQuantity());
-        itemStatus.setText("Status : " + currentTakenOrder.getItemStatus());
+
         itemImage.setImageBitmap(bitmap);
 
         btnStatus.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +119,10 @@ public class TabTakeOrderDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String statusBaru = statusSpinner.getSelectedItem().toString();
+                        currentTakenOrder.setItemStatus(statusBaru);
+                        databaseReference.child(childName).setValue(currentTakenOrder);
+                        finish();
+                        startActivity(getIntent());
                     }
                 });
 
@@ -135,5 +137,40 @@ public class TabTakeOrderDetailsActivity extends AppCompatActivity {
             }
         });
 
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder changeStatusDialog = new AlertDialog.Builder(v.getContext());
+                changeStatusDialog.setTitle("Batalkan Pesanan");
+                changeStatusDialog.setMessage("Batalkan pesanan " + currentTakenOrder.getItemName());
+                changeStatusDialog.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        databaseReference.child(childName).removeValue();
+                        TabTakeOrderDetailsActivity.this.finish();
+                    }
+                });
+
+                changeStatusDialog.setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                changeStatusDialog.create().show();
+            }
+        });
+
+    }
+
+    private void setValue(){
+        userID = currentTakenOrder.getUserID();
+        itemName.setText(currentTakenOrder.getItemName());
+        itemLocation.setText(currentTakenOrder.getItemLocation());
+        itemDescription.setText(currentTakenOrder.getItemDescription());
+        itemPrice.setText(currentTakenOrder.getItemPrice());
+        itemQuantity.setText("Jumlah : " + currentTakenOrder.getItemQuantity());
+        itemStatus.setText("Status : " + currentTakenOrder.getItemStatus());
     }
 }
