@@ -25,7 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class EditProfileActivity extends AppCompatActivity {
 
-    private EditText mUserNewName, mUserNewEmail, mUserNewPhone;
+    private EditText mUserNewName, mUserNewPhone;
     private Button mEditProfile;
 
     private FirebaseUser fUser;
@@ -39,7 +39,6 @@ public class EditProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_profile);
 
         mUserNewName = findViewById(R.id.et_edit_profile_fullname);
-        mUserNewEmail = findViewById(R.id.et_edit_profile_email);
         mUserNewPhone = findViewById(R.id.et_edit_profile_phone);
         mEditProfile = findViewById(R.id.btn_edit_profile_edit);
 
@@ -54,7 +53,6 @@ public class EditProfileActivity extends AppCompatActivity {
                     UserModel userModel = postSnapshot.getValue(UserModel.class);
                     if(userModel.getUserID().equals(fAuth.getUid())){
                         currentUserModel = userModel;
-                        mUserNewEmail.setText(userModel.getUserEmail());
                         mUserNewName.setText(userModel.getUserName());
                         mUserNewPhone.setText(userModel.getUserPhonenumber());
                         break;
@@ -71,25 +69,16 @@ public class EditProfileActivity extends AppCompatActivity {
         mEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = mUserNewEmail.getText().toString().trim();
                 String phone = mUserNewPhone.getText().toString().trim();
                 String fullName = mUserNewName.getText().toString().trim();
                 if(validateData()){
-                    currentUserModel.setUserEmail(email);
                     currentUserModel.setUserPhonenumber(phone);
                     currentUserModel.setUserName(fullName);
 
-                    fUser.updateEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
-                                databaseReference.child(currentUserModel.getUserID()).setValue(currentUserModel);
-                                Toast.makeText(EditProfileActivity.this,"Sukses Ubah Profil", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                startActivity(intent);
-                            }
-                        }
-                    });
+                    databaseReference.child(currentUserModel.getUserID()).setValue(currentUserModel);
+                    Toast.makeText(EditProfileActivity.this,"Sukses Ubah Profil", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
 
                 }
             }
@@ -98,14 +87,8 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private boolean validateData(){
-        String email = mUserNewEmail.getText().toString().trim();
         String phone = mUserNewPhone.getText().toString().trim();
         String fullName = mUserNewName.getText().toString().trim();
-
-        if(email.isEmpty()){
-            mUserNewEmail.setError("E-mail Tidak Boleh Kosong");
-            return false;
-        }
 
         if(phone.isEmpty()){
             mUserNewPhone.setError("Nomor Tidak Boleh Kosong");
