@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Nitip Aja</string>
+    <string name="title_home">Beranda</string>
+    <string name="title_transaction">Transaksi</string>
+    <string name="title_profile">Profil</string>
+
+    <string-array name="category">
+        <item>- Pilih Kategori -</item>
+        <item>Makanan</item>
+        <item>Kecantikan</item>
+        <item>Elektronik</item>
+        <item>Mainan</item>
+        <item>Souvenir</item>
+        <item>Merchandise</item>
+        <item>Fashion</item>
+        <item>Lainnya</item>
+    </string-array>
+
+    <string-array name="status">
+        <item>Diambil</item>
+        <item>Barang Dibeli</item>
+        <item>Barang Telah Dikirim</item>
+    </string-array>
+</resources>

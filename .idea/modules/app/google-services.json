@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1013304302230",
+    "firebase_url": "https://nitip-aja.firebaseio.com",
+    "project_id": "nitip-aja",
+    "storage_bucket": "nitip-aja.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1013304302230:android:9b732adabd93b2863f80b7",
+        "android_client_info": {
+          "package_name": "com.example.nitipaja"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1013304302230-6u8ha0mtuq374pep16a06eev61n1m2n2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.nitipaja",
+            "certificate_hash": "4b09641f5fd5840cee0a7893717a9588daaff145"
+          }
+        },
+        {
+          "client_id": "1013304302230-ff7mg4nmpnjots9nq8ia2u8ft1331rqr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDezJBjW2thv7BujLu7Fsk6XTr6h7tlsss"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1013304302230-ff7mg4nmpnjots9nq8ia2u8ft1331rqr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
