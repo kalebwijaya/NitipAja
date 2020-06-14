@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nitipaja.R;
+import com.example.nitipaja.ui.login.UserModel;
 import com.example.nitipaja.ui.transaction.takeOrder.TabTakeOrderDetailsActivity;
 import com.example.nitipaja.ui.transaction.takeOrder.TabTakeOrderModel;
 import com.google.firebase.database.DataSnapshot;
@@ -33,7 +35,7 @@ public class TabRequestDetailsActivity extends AppCompatActivity {
     private Button btnCancel, btnWA;
 
     private TabRequestModel currentRequest;
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReference, userReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class TabRequestDetailsActivity extends AppCompatActivity {
         btnCancel = findViewById(R.id.btn_tab_request_cancel);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("transaction");
+        userReference = FirebaseDatabase.getInstance().getReference("user");
         Intent intent = getIntent();
         itemID = intent.getStringExtra("itemID");
 
@@ -108,6 +111,32 @@ public class TabRequestDetailsActivity extends AppCompatActivity {
                 });
 
                 changeStatusDialog.create().show();
+            }
+        });
+
+        btnWA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+                            UserModel userModel = postSnapshot.getValue(UserModel.class);
+                            if(userModel.getUserID().equals(userID)){
+                                String url = "https://api.whatsapp.com/send?phone=+62" + userModel.getUserPhonenumber();
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse(url));
+                                startActivity(i);
+                                break;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 

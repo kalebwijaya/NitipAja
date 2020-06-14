@@ -7,8 +7,10 @@ import androidx.core.content.res.ResourcesCompat;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.nitipaja.R;
 import com.example.nitipaja.ui.login.LoginActivity;
+import com.example.nitipaja.ui.login.UserModel;
 import com.example.nitipaja.ui.profile.EditProfileActivity;
 import com.example.nitipaja.ui.transaction.request.TabRequestDetailsActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,7 +44,7 @@ public class TabTakeOrderDetailsActivity extends AppCompatActivity {
     private ImageView itemImage;
     private Button btnStatus, btnCancel, btnWA;
 
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReference, userReference;
 
     private TabTakeOrderModel currentTakenOrder;
 
@@ -62,8 +65,10 @@ public class TabTakeOrderDetailsActivity extends AppCompatActivity {
         btnWA = findViewById(R.id.btn_take_order_WA);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("transaction");
+        userReference = FirebaseDatabase.getInstance().getReference("user");
 
         final Intent intent = getIntent();
+        userID = intent.getStringExtra("userID");
         itemID = intent.getStringExtra("itemID");
 
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -159,6 +164,32 @@ public class TabTakeOrderDetailsActivity extends AppCompatActivity {
                 });
 
                 changeStatusDialog.create().show();
+            }
+        });
+
+        btnWA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+                            UserModel userModel = postSnapshot.getValue(UserModel.class);
+                            if(userModel.getUserID().equals(userID)){
+                                String url = "https://api.whatsapp.com/send?phone=+62" + userModel.getUserPhonenumber();
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse(url));
+                                startActivity(i);
+                                break;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 

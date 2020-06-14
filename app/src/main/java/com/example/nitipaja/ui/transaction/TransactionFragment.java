@@ -22,10 +22,6 @@ public class TransactionFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_transaction, container, false);
 
-        Toolbar toolbar = (Toolbar) root.findViewById(R.id.toolBar);
-        toolbar.setTitle(this.getResources().getString(R.string.title_transaction));
-        getActivity().setActionBar(toolbar);
-
         TabLayout tabLayout = root.findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Permintaan"));
         tabLayout.addTab(tabLayout.newTab().setText("Pesanan Diterima"));

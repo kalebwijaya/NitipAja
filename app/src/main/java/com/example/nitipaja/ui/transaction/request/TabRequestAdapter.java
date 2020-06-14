@@ -57,7 +57,7 @@ public class TabRequestAdapter extends RecyclerView.Adapter<TabRequestHolder>{
                 String gItemLocation = models.get(position).getItemLocation();
                 String gItemQuantity = models.get(position).getItemQuantity();
                 String gItemDescription = models.get(position).getItemDescription();
-                String gUserID = models.get(position).getUserID();
+                String gUserID = models.get(position).getTakenOrderBy();
                 String gItemStatus = models.get(position).getItemStatus();
                 String gItemID = models.get(position).getItemID();
 
