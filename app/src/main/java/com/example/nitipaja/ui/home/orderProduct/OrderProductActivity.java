@@ -140,8 +140,8 @@ public class OrderProductActivity extends AppCompatActivity implements AdapterVi
     }
 
     private void placeRequest(){
-        childName = System.currentTimeMillis()+"."+getFileExtension(mImageUri);
-        if(mImageUri != null){
+        if(validate() == true && mImageUri != null){
+            childName = System.currentTimeMillis()+"."+getFileExtension(mImageUri);
             StorageReference fileReferences = storageReference.child(childName);
             mUploadTask = fileReferences.putFile(mImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -188,5 +188,29 @@ public class OrderProductActivity extends AppCompatActivity implements AdapterVi
         }else{
             Toast.makeText(this,"Silahkan Pilih Gambar", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private boolean validate(){
+        if(etProductName.getText().toString().trim().isEmpty()){
+            etProductName.setError("Nama Produk Tidak Boleh Kosong");
+            return false;
+        }else if(etProductLocation.getText().toString().trim().isEmpty()){
+            etProductLocation.setError("Lokasi Produk Tidak Boleh Kosong");
+            return false;
+        }else if(etProductPrice.getText().toString().trim().isEmpty()){
+            etProductPrice.setError("Harga Produk Tidak Boleh Kosong");
+            return false;
+        }else if(etProductQuantity.getText().toString().trim().isEmpty()){
+            etProductQuantity.setError("Jumlah Produk Tidak Boleh Kosong");
+            return false;
+        }else if(etProductDescription.getText().toString().trim().isEmpty()){
+            etProductDescription.setError("Keterangan Produk Tidak Boleh Kosong");
+            return false;
+        }else if(selectedCategory.equals("- Pilih Kategori -")){
+            Toast.makeText(getApplicationContext(),"Silahkan Pilih Kategori Produk", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 }

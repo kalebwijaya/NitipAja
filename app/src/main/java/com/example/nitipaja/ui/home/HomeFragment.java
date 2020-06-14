@@ -2,10 +2,15 @@ package com.example.nitipaja.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.SearchEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nitipaja.R;
 import com.example.nitipaja.ui.home.orderProduct.OrderProductActivity;
+import com.example.nitipaja.ui.search.SearchActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +27,8 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     private List<Category> categoryList;
-    Button btnToOrder;
+    private Button btnToOrder;
+    private EditText mSearchBar;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -35,6 +42,9 @@ public class HomeFragment extends Fragment {
         }
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+
+        mSearchBar = root.findViewById(R.id.et_home_search_bar);
+        mSearchBar.setOnEditorActionListener(editorListener);
 
         btnToOrder = root.findViewById(R.id.btn_home_to_order_item);
 
@@ -53,4 +63,16 @@ public class HomeFragment extends Fragment {
 
         return root;
     }
+
+    private TextView.OnEditorActionListener editorListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if(actionId == EditorInfo.IME_ACTION_SEARCH){
+                Intent intent = new Intent(getContext(), SearchActivity.class);
+                intent.putExtra("searchKey",mSearchBar.getText().toString());
+                getContext().startActivity(intent);
+            }
+            return false;
+        }
+    };
 }

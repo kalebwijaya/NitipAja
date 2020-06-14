@@ -11,10 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.profile.EditPasswordActivity"></activity>
+        <activity android:name=".ui.search.SearchActivity"></activity>
+        <activity android:name=".ui.profile.EditPasswordActivity" />
         <activity android:name=".ui.profile.EditProfileActivity" />
         <activity android:name=".ui.login.RegisterActivity" />
-        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ui.home.orderProduct.OrderProductActivity" />
         <activity android:name=".ui.transaction.request.TabRequestDetailsActivity" />
         <activity android:name=".ui.transaction.takeOrder.TabTakeOrderDetailsActivity" />
