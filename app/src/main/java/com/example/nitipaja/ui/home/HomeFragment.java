@@ -92,6 +92,7 @@ public class HomeFragment extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listProduct.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
                     CategoryModel categoryModel = postSnapshot.getValue(CategoryModel.class);
                     if(!(categoryModel.getUserID().equals(userID))
