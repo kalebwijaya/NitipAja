@@ -66,7 +66,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchHolder> {
                 Bitmap bitmap = bitmapDrawable.getBitmap();
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-                bitmap.compress(Bitmap.CompressFormat.JPEG,100, stream);
+                bitmap.compress(Bitmap.CompressFormat.PNG,100, stream);
 
                 byte[] bytes = stream.toByteArray();
 
