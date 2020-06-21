@@ -3,6 +3,7 @@ package com.example.nitipaja.ui.transaction.request;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -54,7 +55,7 @@ public class TabRequestDetailsActivity extends AppCompatActivity {
 
         databaseReference = FirebaseDatabase.getInstance().getReference("transaction");
         userReference = FirebaseDatabase.getInstance().getReference("user");
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         itemID = intent.getStringExtra("itemID");
 
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -87,14 +88,22 @@ public class TabRequestDetailsActivity extends AppCompatActivity {
         }else{
             btnWA.setVisibility(View.VISIBLE);
             btnCancel.setActivated(false);
+            btnCancel.setText("Konfirmasi Pesanan");
+            btnCancel.setBackgroundTintList(ContextCompat.getColorStateList(TabRequestDetailsActivity.this, R.color.green));
         }
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder changeStatusDialog = new AlertDialog.Builder(v.getContext());
-                changeStatusDialog.setTitle("Batalkan Pesanan");
-                changeStatusDialog.setMessage("Batalkan pesanan " + currentRequest.getItemName());
+                if(intent.getStringExtra("itemStatus").equals("Menunggu")){
+                    changeStatusDialog.setTitle("Batalkan Pesanan");
+                    changeStatusDialog.setMessage("Batalkan pesanan " + currentRequest.getItemName());
+                }else{
+                    changeStatusDialog.setTitle("Konfirmasi Pesanan");
+                    changeStatusDialog.setMessage("Konfirmasi penerimaan pesanan " + currentRequest.getItemName());
+                }
+
                 changeStatusDialog.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
