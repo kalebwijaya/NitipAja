@@ -19,10 +19,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nitipaja.MainActivity;
 import com.example.nitipaja.R;
 import com.example.nitipaja.ui.transaction.takeOrder.TabTakeOrderModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,6 +41,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     private Button btnMakeRequest, btnTakeRequest;
 
     private CategoryModel currentItem;
+    private FirebaseUser fUser;
 
     private DatabaseReference databaseReference;
 
@@ -54,6 +58,10 @@ public class ItemDetailsActivity extends AppCompatActivity {
         itemImage = findViewById(R.id.iv_item_details);
         btnMakeRequest = findViewById(R.id.btn_make_request);
         btnTakeRequest = findViewById(R.id.btn_take_request);
+
+
+        fUser = FirebaseAuth.getInstance().getCurrentUser();
+        userID = fUser.getUid();
 
         databaseReference = FirebaseDatabase.getInstance().getReference("transaction");
         final Intent intent = getIntent();
@@ -81,12 +89,11 @@ public class ItemDetailsActivity extends AppCompatActivity {
         byte[] bytes = getIntent().getByteArrayExtra("itemImage");
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
 
-        userID = intent.getStringExtra("userID");
         itemName.setText(intent.getStringExtra("itemName"));
         itemLocation.setText(intent.getStringExtra("itemLocation"));
         itemDescription.setText(intent.getStringExtra("itemDescription"));
         itemPrice.setText(intent.getStringExtra("itemPrice"));
-        itemQuantity.setText("Jumlah : " + intent.getIntExtra("itemQuantitiy",1));
+        itemQuantity.setText("Jumlah : " + intent.getStringExtra("itemQuantity"));
         itemImage.setImageBitmap(bitmap);
 
         btnMakeRequest.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +124,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         currentItem.setUserID(userID);
+                        currentItem.setItemQuantity(itemQuantity.getText().toString());
                         databaseReference.child(childID).setValue(currentItem);
                         ItemDetailsActivity.this.finish();
                     }

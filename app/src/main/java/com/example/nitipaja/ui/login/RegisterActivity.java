@@ -57,7 +57,6 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
-                                Toast.makeText(RegisterActivity.this,"Sukses Daftar", Toast.LENGTH_SHORT).show();
                                 UserModel userModel = new UserModel(
                                         fAuth.getUid(),
                                         fullName,
@@ -66,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
                                         );
                                 fDatabaseRef.child(fAuth.getUid()).setValue(userModel);
 
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                                 startActivity(intent);
                             }else{
                                 Toast.makeText(RegisterActivity.this,task.getException().getMessage(), Toast.LENGTH_SHORT).show();

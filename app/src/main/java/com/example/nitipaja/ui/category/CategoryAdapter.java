@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -69,6 +70,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryHolder> {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
                 bitmap.compress(Bitmap.CompressFormat.JPEG,100, stream);
+
 
                 byte[] bytes = stream.toByteArray();
 
